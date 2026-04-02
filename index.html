@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Martin Moenga — AI/ML Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Archivo+Black&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --void:#0B0D17;
+  --glow:#00FFA3;
+  --pulse:#FF006E;
+  --ice:#E0F7FF;
+  --fog:#5A6C7D;
+  --jet:'JetBrains Mono',monospace;
+  --block:'Archivo Black',sans-serif;
+  --body:'Work Sans',sans-serif;
+}
+
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{
+  background:var(--void);
+  color:var(--ice);
+  font-family:var(--body);
+  cursor:none;
+  overflow-x:hidden;
+}
+
+/* CUSTOM CURSOR */
+#cursor{
+  width:20px;height:20px;
+  border:2px solid var(--glow);
+  border-radius:50%;
+  position:fixed;
+  pointer-events:none;
+  z-index:9999;
+  transition:transform 0.15s ease,border-color 0.2s;
+  transform:translate(-50%,-50%);
+  mix-blend-mode:difference;
+}
+#cursor-trail{
+  width:8px;height:8px;
+  background:var(--glow);
+  border-radius:50%;
+  position:fixed;
+  pointer-events:none;
+  z-index:9998;
+  transition:transform 0.3s ease;
+  transform:translate(-50%,-50%);
+  opacity:0.6;
+}
+body:hover #cursor{transform:translate(-50%,-50%) scale(1.5)}
+
+/* PARTICLE CANVAS */
+#particles{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  opacity:0.3;
+}
+
+/* NAV */
+nav{
+  position:fixed;
+  top:0;left:0;right:0;
+  z-index:100;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:24px 60px;
+  background:rgba(11,13,23,0.8);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(0,255,163,0.1);
+  animation:slideDown 0.6s ease;
+}
+@keyframes slideDown{from{transform:translateY(-100%)}}
+.logo{
+  font-family:var(--jet);
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:4px;
+  color:var(--glow);
+  text-shadow:0 0 20px rgba(0,255,163,0.5);
+}
+nav ul{
+  list-style:none;
+  display:flex;
+  gap:40px;
+}
+nav a{
+  font-family:var(--jet);
+  font-size:11px;
+  letter-spacing:2px;
+  color:var(--fog);
+  text-decoration:none;
+  text-transform:uppercase;
+  position:relative;
+  transition:color 0.3s;
+}
+nav a::after{
+  content:'';
+  position:absolute;
+  bottom:-4px;left:0;
+  width:0;height:2px;
+  background:var(--glow);
+  transition:width 0.3s;
+}
+nav a:hover{color:var(--glow)}
+nav a:hover::after{width:100%}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:120px 60px;
+  position:relative;
+  overflow:hidden;
+}
+.hero-glitch{
+  font-family:var(--block);
+  font-size:clamp(4rem,12vw,9rem);
+  line-height:0.9;
+  margin-bottom:30px;
+  animation:glitchFade 1s ease forwards;
+  position:relative;
+}
+@keyframes glitchFade{
+  0%{opacity:0;transform:translateY(50px)}
+  100%{opacity:1;transform:translateY(0)}
+}
+.hero-glitch span{
+  background:linear-gradient(90deg,var(--glow),var(--pulse),var(--ice));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:gradientShift 3s ease infinite;
+}
+@keyframes gradientShift{
+  0%,100%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+}
+.hero-subtitle{
+  font-family:var(--jet);
+  font-size:clamp(14px,2vw,18px);
+  color:var(--fog);
+  letter-spacing:3px;
+  margin-bottom:40px;
+  opacity:0;
+  animation:fadeUp 0.8s 0.3s ease forwards;
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.hero-cta{
+  display:flex;
+  gap:20px;
+  opacity:0;
+  animation:fadeUp 0.8s 0.6s ease forwards;
+}
+.btn{
+  font-family:var(--jet);
+  font-size:12px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  padding:16px 32px;
+  border:none;
+  cursor:none;
+  text-decoration:none;
+  position:relative;
+  overflow:hidden;
+  transition:all 0.3s;
+}
+.btn-primary{
+  background:var(--glow);
+  color:var(--void);
+  box-shadow:0 0 30px rgba(0,255,163,0.4);
+}
+.btn-primary::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(45deg,transparent,rgba(255,255,255,0.3),transparent);
+  transform:translateX(-100%);
+  transition:transform 0.6s;
+}
+.btn-primary:hover::before{transform:translateX(100%)}
+.btn-primary:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 40px rgba(0,255,163,0.6);
+}
+.btn-outline{
+  background:transparent;
+  color:var(--glow);
+  border:2px solid var(--glow);
+}
+.btn-outline:hover{
+  background:rgba(0,255,163,0.1);
+  transform:translateY(-3px);
+}
+
+/* FLOATING STATUS */
+.status-badge{
+  position:absolute;
+  top:140px;right:60px;
+  padding:12px 24px;
+  background:rgba(255,0,110,0.1);
+  border:1px solid var(--pulse);
+  border-radius:50px;
+  font-family:var(--jet);
+  font-size:11px;
+  color:var(--pulse);
+  animation:pulse 2s ease infinite;
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 20px rgba(255,0,110,0.3)}
+  50%{box-shadow:0 0 40px rgba(255,0,110,0.6)}
+}
+
+/* SECTION COMMON */
+section{
+  padding:100px 60px;
+  position:relative;
+  z-index:1;
+}
+.section-number{
+  font-family:var(--jet);
+  font-size:11px;
+  letter-spacing:4px;
+  color:var(--glow);
+  margin-bottom:60px;
+  opacity:0;
+  transition:opacity 0.6s,transform 0.6s;
+}
+.section-number.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* SKILLS */
+.skills{background:linear-gradient(180deg,var(--void),#0D1420)}
+.skills-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:2px;
+  background:rgba(0,255,163,0.05);
+}
+.skill-card{
+  background:var(--void);
+  padding:40px;
+  border:1px solid transparent;
+  transition:all 0.4s;
+  opacity:0;
+  transform:translateY(50px);
+}
+.skill-card.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+.skill-card:hover{
+  border-color:var(--glow);
+  background:rgba(0,255,163,0.03);
+  transform:translateY(-8px);
+  box-shadow:0 10px 50px rgba(0,255,163,0.2);
+}
+.skill-label{
+  font-family:var(--jet);
+  font-size:10px;
+  letter-spacing:3px;
+  color:var(--pulse);
+  margin-bottom:16px;
+  text-transform:uppercase;
+}
+.skill-card h3{
+  font-family:var(--block);
+  font-size:1.4rem;
+  margin-bottom:20px;
+  color:var(--ice);
+}
+.skill-tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.tag{
+  font-family:var(--jet);
+  font-size:10px;
+  padding:6px 12px;
+  background:rgba(0,255,163,0.1);
+  border:1px solid rgba(0,255,163,0.3);
+  color:var(--glow);
+  transition:all 0.3s;
+}
+.tag:hover{
+  background:var(--glow);
+  color:var(--void);
+}
+
+/* EXPERIENCE */
+.experience{background:var(--void)}
+.exp-timeline{position:relative;padding-left:60px}
+.exp-timeline::before{
+  content:'';
+  position:absolute;
+  left:20px;top:0;bottom:0;
+  width:2px;
+  background:linear-gradient(180deg,var(--glow),transparent);
+}
+.exp-item{
+  position:relative;
+  margin-bottom:60px;
+  padding:30px;
+  background:rgba(0,255,163,0.02);
+  border-left:3px solid var(--glow);
+  opacity:0;
+  transform:translateX(-50px);
+  transition:all 0.6s;
+}
+.exp-item.visible{
+  opacity:1;
+  transform:translateX(0);
+}
+.exp-item::before{
+  content:'';
+  position:absolute;
+  left:-63px;top:40px;
+  width:12px;height:12px;
+  background:var(--glow);
+  border-radius:50%;
+  box-shadow:0 0 20px var(--glow);
+}
+.exp-date{
+  font-family:var(--jet);
+  font-size:11px;
+  color:var(--fog);
+  margin-bottom:8px;
+}
+.exp-item h3{
+  font-family:var(--block);
+  font-size:1.3rem;
+  margin-bottom:8px;
+  color:var(--ice);
+}
+.exp-company{
+  font-family:var(--jet);
+  font-size:12px;
+  color:var(--glow);
+  margin-bottom:16px;
+}
+.exp-item ul{list-style:none;padding:0}
+.exp-item li{
+  font-family:var(--body);
+  font-size:14px;
+  color:var(--fog);
+  line-height:1.8;
+  margin-bottom:8px;
+  padding-left:20px;
+  position:relative;
+}
+.exp-item li::before{
+  content:'▸';
+  position:absolute;
+  left:0;
+  color:var(--pulse);
+}
+
+/* PROJECTS */
+.projects{
+  background:linear-gradient(180deg,var(--void),#0F1828);
+  padding:120px 60px;
+}
+.projects-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:30px;
+}
+.project-card{
+  background:rgba(11,13,23,0.8);
+  border:1px solid rgba(0,255,163,0.1);
+  padding:40px;
+  position:relative;
+  overflow:hidden;
+  transition:all 0.5s;
+  opacity:0;
+  transform:scale(0.9);
+}
+.project-card.visible{
+  opacity:1;
+  transform:scale(1);
+}
+.project-card::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,rgba(0,255,163,0.1),transparent);
+  opacity:0;
+  transition:opacity 0.5s;
+}
+.project-card:hover::before{opacity:1}
+.project-card:hover{
+  border-color:var(--glow);
+  transform:translateY(-10px) scale(1.02);
+  box-shadow:0 20px 60px rgba(0,255,163,0.3);
+}
+.project-number{
+  font-family:var(--jet);
+  font-size:10px;
+  color:var(--fog);
+  margin-bottom:16px;
+}
+.project-card h3{
+  font-family:var(--block);
+  font-size:1.5rem;
+  margin-bottom:12px;
+  color:var(--ice);
+}
+.project-stack{
+  font-family:var(--jet);
+  font-size:11px;
+  color:var(--pulse);
+  margin-bottom:16px;
+  letter-spacing:1px;
+}
+.project-card p{
+  font-size:14px;
+  color:var(--fog);
+  line-height:1.7;
+  margin-bottom:20px;
+}
+.project-link{
+  display:inline-block;
+  font-family:var(--jet);
+  font-size:11px;
+  color:var(--glow);
+  text-decoration:none;
+  letter-spacing:2px;
+  padding:8px 16px;
+  border:1px solid var(--glow);
+  transition:all 0.3s;
+}
+.project-link:hover{
+  background:var(--glow);
+  color:var(--void);
+}
+
+/* CONTACT */
+.contact{
+  background:var(--void);
+  text-align:center;
+  padding:120px 60px;
+}
+.contact h2{
+  font-family:var(--block);
+  font-size:clamp(3rem,8vw,6rem);
+  line-height:0.9;
+  margin-bottom:40px;
+}
+.contact h2 span{
+  background:linear-gradient(90deg,var(--glow),var(--pulse));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.contact p{
+  font-family:var(--jet);
+  font-size:14px;
+  color:var(--fog);
+  margin-bottom:50px;
+}
+.contact-grid{
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  flex-wrap:wrap;
+}
+.contact-btn{
+  font-family:var(--jet);
+  font-size:11px;
+  letter-spacing:2px;
+  color:var(--glow);
+  text-decoration:none;
+  padding:14px 28px;
+  border:2px solid var(--glow);
+  transition:all 0.3s;
+  text-transform:uppercase;
+}
+.contact-btn:hover{
+  background:var(--glow);
+  color:var(--void);
+  box-shadow:0 0 30px rgba(0,255,163,0.5);
+}
+
+/* FOOTER */
+footer{
+  background:var(--void);
+  padding:40px;
+  text-align:center;
+  font-family:var(--jet);
+  font-size:11px;
+  color:var(--fog);
+  border-top:1px solid rgba(0,255,163,0.1);
+}
+
+/* SCROLL REVEAL */
+.reveal{
+  opacity:0;
+  transform:translateY(50px);
+  transition:all 0.8s ease;
+}
+.reveal.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  nav{padding:20px 30px}
+  nav ul{gap:20px}
+  section{padding:80px 30px}
+  .hero{padding:100px 30px}
+  .status-badge{display:none}
+  .exp-timeline{padding-left:40px}
+  .exp-timeline::before{left:10px}
+  .exp-item::before{left:-46px}
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+<canvas id="particles"></canvas>
+
+<nav>
+  <div class="logo">M.MOENGA</div>
+  <ul>
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="status-badge">● AVAILABLE FOR HIRE</div>
+  <div class="hero-glitch">
+    <span>AI/ML<br/>ENGINEER</span>
+  </div>
+  <div class="hero-subtitle">MEDICAL AI • DATA ANNOTATION • HEALTH-TECH</div>
+  <div class="hero-cta">
+    <a href="#projects" class="btn btn-primary">View Projects</a>
+    <a href="#contact" class="btn btn-outline">Get In Touch</a>
+  </div>
+</section>
+
+<section class="skills" id="skills">
+  <div class="section-number">// 01 — SKILLS</div>
+  <div class="skills-grid">
+    <div class="skill-card reveal">
+      <div class="skill-label">Machine Learning</div>
+      <h3>AI Engineering</h3>
+      <div class="skill-tags">
+        <span class="tag">TensorFlow</span>
+        <span class="tag">Transfer Models</span>
+        <span class="tag">Scikit-learn</span>
+        <span class="tag">Keras</span>
+        <span class="tag">Boosting & Model evaluation</span>
+        <span class="tag">CNNs</span>
+      </div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-label">Data Science</div>
+      <h3>Analytics</h3>
+      <div class="skill-tags">
+        <span class="tag">Python</span>
+        <span class="tag">Pandas</span>
+        <span class="tag">NumPy</span>
+        <span class="tag">Matplotlib</span>
+        <span class="tag">Feature Eng.</span>
+        <span class="tag">Statistics</span>
+      </div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-label">Development</div>
+      <h3>Full-Stack</h3>
+      <div class="skill-tags">
+        <span class="tag">Next.js 14</span>
+        <span class="tag">FastAPI</span>
+        <span class="tag">Flutter</span>
+        <span class="tag">Supabase</span>
+        <span class="tag">Firebase</span>
+        <span class="tag">React</span>
+      </div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-label">Annotation</div>
+      <h3>AI Platforms</h3>
+      <div class="skill-tags">
+        <span class="tag">iMerit/Ango Hub</span>
+        <span class="tag">Scale AI</span>
+        <span class="tag">Outlier.ai</span>
+        <span class="tag">Remotasks</span>
+        <span class="tag">Appen</span>
+      </div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-label">Infra</div>
+      <h3>DevOps</h3>
+      <div class="skill-tags">
+        <span class="tag">Git/GitHub</span>
+        <span class="tag">Vercel</span>
+        <span class="tag">Workflow Automation</span>
+        <span class="tag">Claude</span>
+        <span class="tag">Ollama</span>
+        <span class="tag">LLM Integration</span>
+      </div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-label">Medical AI</div>
+      <h3>Health-Tech</h3>
+      <div class="skill-tags">
+        <span class="tag">Clinical NLP</span>
+        <span class="tag">Disease Prediction</span>
+        <span class="tag">Triage Systems</span>
+        <span class="tag">Data preprocessing</span>
+      </div>
+    </div>
+  </div>
+<section class="experience" id="experience">
+  <div class="section-number">// 02 — EXPERIENCE</div>
+  <div class="exp-timeline">
+    <div class="exp-item reveal">
+      <div class="exp-date">2023 – PRESENT · FREELANCE · REMOTE</div>
+      <h3>AI Data Annotator & LLM Evaluator</h3>
+      <div class="exp-company">iMerit · Remotasks · Appen · DataAnnotation.tech · Outlier.ai · Scale AI</div>
+      <ul>
+        <li>RLHF annotation, LLM response evaluation, and comparative ranking across 6 platforms.</li>
+        <li>Prompt design and evaluation for LLMs; assessing accuracy, safety, and instruction-following.</li>
+        <li>Specialist in medical, technical code, and mathematical domain annotation.</li>
+        <li>Active two-week sprint participant on iMerit/Ango Hub with consistently high quality scores.</li>
+      </ul>
+    </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-date">2024 – PRESENT · INDEPENDENT</div>
+      <h3>Full-Stack Developer — Health-Tech</h3>
+      <div class="exp-company">AfiaReferral · AfiaTriage</div>
+      <ul>
+        <li>Built AfiaReferral: AI-powered hospital referral platform —groq API. html.</li>
+        <li>Developed AfiaTriage: TEWS/SATS emergency triage calculator deployed at afiatriage.vercel.app.</li>
+        <li>Designed zero-cost MVP architecture optimized for Kenya's public health infrastructure.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="projects" id="projects">
+  <div class="section-number">// 03 — PROJECTS</div>
+  <div class="projects-grid">
+    <div class="project-card reveal">
+      <div class="project-number">01</div>
+      <h3>AfiaReferral</h3>
+      <div class="project-stack">Next.js 14 · FastAPI · Supabase · Vercel</div>
+      <p>AI-powered patient triage and hospital referral platform. Clinical decision support for Kenyan health facilities with real-time triage scoring.</p>
+      <a href="https://github.com/martinmoenga180-png/afiareferral" class="project-link" target="_blank">VIEW PROJECT →</a>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-number">02</div>
+      <h3>AfiaTriage</h3>
+      <div class="project-stack">React · Vite · Vercel · Live</div>
+      <p>Emergency triage tool calculating TEWS scores and assigning SATS triage colors for Kenyan ED departments. Live and in use.</p>
+      <a href="https://afiatriage.vercel.app" class="project-link" target="_blank">VIEW LIVE →</a>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-number">03</div>
+      <h3>EduBrain</h3>
+      <div class="project-stack">Google Gemini API · PDF Extraction · React</div>
+      <p>AI study tool that generates flashcards, concept diagrams, and exam questions from uploaded PDF documents using Gemini 2.0 Flash.</p>
+      <a href="#" class="project-link">VIEW PROJECT →</a>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-number">04</div>
+      <h3>Medical ML Models</h3>
+      <div class="project-stack">Python · Scikit-learn · TensorFlow · Kaggle</div>
+      <p>Disease prediction suite: Heart disease classifier, pneumonia detection from X-rays, and breast cancer prediction model. Deployed on Kaggle with full notebooks.</p>
+      <a href="https://kaggle.com/martinmoenga180png" class="project-link" target="_blank">VIEW KAGGLE →</a>
+    </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="section-number" style="margin-bottom:40px">// 04 — CONTACT</div>
+  <h2>LET'S<br/><span>BUILD.</span></h2>
+  <p>Open to AI/ML Engineer, Data Scientist and Freelance Annotation roles.</p>
+  <div class="contact-grid">
+    <a href="https://github.com/martinmoenga180-png" class="contact-btn" target="_blank">GITHUB</a>
+    <a href="https://kaggle.com/martinmoenga"class="contact-btn" target="_blank">KAGGLE</a>
+    <a href="/cdn-cgi/l/email-protection#14797566607d7a797b717a7375252c24547379757d783a777b79" class="contact-btn">EMAIL</a>
+  </div>
+</section>
+
+<footer>
+  MARTIN MOENGA · NAIROBI, KENYA · BUILT WITH INTENTION · 2026
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// CUSTOM CURSOR
+const cursor=document.getElementById('cursor');
+const trail=document.getElementById('cursor-trail');
+document.addEventListener('mousemove',e=>{
+  cursor.style.left=e.clientX+'px';
+  cursor.style.top=e.clientY+'px';
+  setTimeout(()=>{
+    trail.style.left=e.clientX+'px';
+    trail.style.top=e.clientY+'px';
+  },100);
+});
+
+// PARTICLE SYSTEM
+const canvas=document.getElementById('particles');
+const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+const particles=[];
+const particleCount=100;
+
+class Particle{
+  constructor(){
+    this.x=Math.random()*canvas.width;
+    this.y=Math.random()*canvas.height;
+    this.vx=(Math.random()-0.5)*0.5;
+    this.vy=(Math.random()-0.5)*0.5;
+    this.size=Math.random()*2;
+  }
+  update(){
+    this.x+=this.vx;
+    this.y+=this.vy;
+    if(this.x<0||this.x>canvas.width)this.vx*=-1;
+    if(this.y<0||this.y>canvas.height)this.vy*=-1;
+  }
+  draw(){
+    ctx.fillStyle='rgba(0,255,163,0.5)';
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+    ctx.fill();
+  }
+}
+
+for(let i=0;i<particleCount;i++){
+  particles.push(new Particle());
+}
+
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach(p=>{
+    p.update();
+    p.draw();
+  });
+  // Connect nearby particles
+  particles.forEach((p1,i)=>{
+    particles.slice(i+1).forEach(p2=>{
+      const dx=p1.x-p2.x;
+      const dy=p1.y-p2.y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<120){
+        ctx.strokeStyle=`rgba(0,255,163,${0.2*(1-dist/120)})`;
+        ctx.lineWidth=0.5;
+        ctx.beginPath();
+        ctx.moveTo(p1.x,p1.y);
+        ctx.lineTo(p2.x,p2.y);
+        ctx.stroke();
+      }
+    });
+  });
+  requestAnimationFrame(animate);
+}
+animate();
+
+window.addEventListener('resize',()=>{
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+});
+
+// SCROLL REVEAL
+const revealElements=document.querySelectorAll('.reveal');
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add('visible');
+    }
+  });
+},{threshold:0.1});
+
+revealElements.forEach(el=>observer.observe(el));
+
+// SECTION NUMBERS
+const sectionNumbers=document.querySelectorAll('.section-number');
+sectionNumbers.forEach(el=>{
+  const sectionObserver=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+      }
+    });
+  },{threshold:0.5});
+  sectionObserver.observe(el);
+});
+
+// SKILL CARDS STAGGER
+const skillCards=document.querySelectorAll('.skill-card');
+skillCards.forEach((card,i)=>{
+  card.style.transitionDelay=`${i*0.1}s`;
+});
+
+// PROJECT CARDS STAGGER
+const projectC
